@@ -1,0 +1,27 @@
+# Dependencias
+/node_modules
+
+# Archivos de registro
+npm-debug.log
+logs
+*.log
+
+# Archivos de configuración
+.env
+
+# Archivos de respaldo
+*.bak
+*.backup
+*.swp
+
+# Archivos de compilación
+/public/build
+/build
+
+# Archivos temporales
+.tmp
+.temp
+.temp.*
+
+# Archivos de caché
+.cache
