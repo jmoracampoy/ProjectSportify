@@ -1,27 +1,29 @@
- name: frontend-deploy
+name: frontend-deploy
 
- on:
-   push:
-     branches: [ main ] 
-   pull_request:
-     branches: [ main ]
-   workflow_dispatch:
+on:
+  push:
+    branches: [main] 
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 
- jobs:
-   build:
-     runs-on: ubuntu-latest
-     container: node:18.18.0
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: node:18.18.0
 
-     steps:
-       - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-       - name: Install dependencies
-         run: cd backend && npm install
+      - name: Install dependencies
+        run: cd backend && npm install
 
-       - name: Test
-         run: cd backend && npm test
+      - name: Test
+        run: cd backend && npm test
 
-       - uses: 'google-github-actions/auth@v2'
-         with:
-          credentials_json: ${{secrets.CREDENTIALS_JSON}}
+      - name: Authenticate with Google Cloud Platform
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.CREDENTIALS_JSON }}
+
          

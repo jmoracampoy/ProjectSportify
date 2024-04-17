@@ -21,7 +21,4 @@
        - name: Build
          run: cd frontend && npm run build:prod
 
-       - name: path workaround
-         run: cp
-
       
