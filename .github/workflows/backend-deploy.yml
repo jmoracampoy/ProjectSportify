@@ -30,7 +30,7 @@ jobs:
         uses: 'google-github-actions/deploy-cloudrun@v2'
         with:
           service: 'backend-spotify'
-          source: '../backend'
+          source: './backend'
           flags: '--allow-unauthenticated'
       
       - name: 'Use output'
