@@ -1,0 +1,83 @@
+name: CICD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+    container: node:18
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: cd frontend && npm install
+
+      - name: Build
+        run: cd frontend && npm run build:prod
+
+      - name: path workaround
+        run: cp ./frontend/www/index.html ./frontend/www/404.html
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: www
+          path: ./frontend/www
+
+  build-backend:
+    runs-on: ubuntu-latest
+    container: node:18
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: cd backend && npm install
+
+      - name: test
+        run: cd backend && npm test
+
+      - uses: "google-github-actions/auth@v2"
+        with:
+          credentials_json: ${{ secrets.CREDENTIALS_JSON }}
+
+      - id: "deploy"
+        uses: "google-github-actions/deploy-cloudrun@v2"
+        with:
+          service: "backend-spotify"
+          source: "./backend"
+          flags: "--allow-unauthenticated"
+
+      - name: "Use output"
+        run: 'curl "${{ steps.deploy.outputs.url }}"'
+
+  e2e:
+    needs: [build-frontend, build-backend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: www
+          path: frontend/www
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          start: npm start
+          working-directory: frontend
+          wait-on: "npx wait-on --timeout 90000 http://localhost:4200"
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
+        if: github.ref == 'refs/heads/main'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./frontend/www
