@@ -3,7 +3,7 @@ const axios = require("axios");
 const getSpotifyAccessToken = require("../middlewares/configSpotify");
 
 //Cargar de canciones Spotify
-exports.getTracks = async (req, res) => {
+exports.getTracksSpotify = async (req, res) => {
   try {
     const accessToken = await getSpotifyAccessToken();
     let tracks = [];
@@ -12,20 +12,20 @@ exports.getTracks = async (req, res) => {
     while (tracks.length < 500 && nextUrl) {
       const response = await axios.get(nextUrl, {
         headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
 
-      const newTracks = response.data.tracks.items.map(track => ({
+      const newTracks = response.data.tracks.items.map((track) => ({
         name: track.name,
-        artist: track.artists.map(artist => artist.name).join(', '),
+        artist: track.artists.map((artist) => artist.name).join(", "),
         releaseDate: track.album.release_date,
         imageUrl: track.album.images[0]?.url,
         comments: [],
         geolocation: {
-          type: 'Point',
-          coordinates: [0, 0]
-        }
+          type: "Point",
+          coordinates: [0, 0],
+        },
       }));
 
       tracks = tracks.concat(newTracks);
@@ -42,7 +42,42 @@ exports.getTracks = async (req, res) => {
     res.json(tracks);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Error al obtener las pistas' });
+    res.status(500).json({ error: "Error al obtener las pistas" });
+  }
+};
+
+// Buscar canciones en Spotify
+exports.getTracks = async (req, res) => {
+  try {
+    const accessToken = await getSpotifyAccessToken();
+    const { query } = req.query; // Obtener el término de búsqueda de la query string
+
+    if (!query) {
+      return res.status(400).json({ error: "Query parameter is required" });
+    }
+
+    const response = await axios.get(`https://api.spotify.com/v1/search`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      params: {
+        q: query,
+        type: "track",
+        limit: 50, // Puedes ajustar este límite según tus necesidades
+      },
+    });
+
+    const tracks = response.data.tracks.items.map((track) => ({
+      name: track.name,
+      artist: track.artists.map((artist) => artist.name).join(", "),
+      releaseDate: track.album.release_date,
+      imageUrl: track.album.images[0]?.url,
+    }));
+
+    res.json(tracks);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al obtener las pistas" });
   }
 };
 

@@ -355,6 +355,52 @@ const auth = require('../middlewares/auth');
  *       '500':
  *         description: Error interno del servidor
  */
+/**
+ * @swagger
+ * /songs/get-tracks:
+ *   get:
+ *     summary: Search for tracks on Spotify
+ *     description: Search for tracks on Spotify using a query parameter.
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The search query to find tracks on Spotify.
+ *     responses:
+ *       200:
+ *         description: A list of tracks from Spotify
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   name:
+ *                     type: string
+ *                     description: The name of the track.
+ *                     example: Let It Be
+ *                   artist:
+ *                     type: string
+ *                     description: The name of the artist.
+ *                     example: The Beatles
+ *                   releaseDate:
+ *                     type: string
+ *                     format: date
+ *                     description: The release date of the track.
+ *                     example: 1970-05-08
+ *                   imageUrl:
+ *                     type: string
+ *                     description: The URL of the track's album cover image.
+ *                     example: https://i.scdn.co/image/abc123
+ *       400:
+ *         description: Query parameter is required
+ *       500:
+ *         description: Error while fetching tracks from Spotify
+ */
+router.get('/get-tracks', songController.getTracksSpotify);
 router.get('/tracks', songController.getTracks);
 router.get('/', songController.searchSongs);
 router.get('/:id', songController.getSong);
