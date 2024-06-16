@@ -1,0 +1,71 @@
+.song-card {
+  max-width: 400px;
+  margin: auto;
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.song-image-container {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.song-image {
+  width: 100%;
+  max-height: 250px;
+  object-fit: cover;
+}
+
+.song-image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Color del fondo semitransparente */
+  color: #fff; /* Color del texto */
+  padding: 8px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.release-date {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.comment-list {
+  margin-top: 16px;
+}
+
+.comment-item {
+  padding: 12px;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.comment-text {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.comment-info {
+  font-size: 12px;
+  color: #888;
+}
+
+.no-comments {
+  margin-top: 16px;
+  text-align: center;
+  color: #888;
+}
+
+.comment-form {
+  margin-top: 16px;
+}

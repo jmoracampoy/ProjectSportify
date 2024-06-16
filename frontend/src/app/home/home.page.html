@@ -1,1 +1,56 @@
+<!-- src/app/components/song-list/song-list.component.html -->
+<ion-content>
+  <div class="container">
+    <div class="search-bar">
+      <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="onInput($event)" (ionClear)="clearSearch()" (ionEnter)="searchSongs()" placeholder="Buscar canciones o artistas"></ion-searchbar>
+    </div>
 
+    <div *ngIf="loading" class="spinner-container">
+      <ion-spinner></ion-spinner>
+    </div>
+
+    <div *ngIf="!loading && paginatedSongs.length === 0">
+      <p>No hay canciones disponibles.</p>
+    </div>
+
+    <ion-list *ngIf="!loading && paginatedSongs.length > 0">
+      <ion-item *ngFor="let song of paginatedSongs">
+        <ion-thumbnail slot="start">
+          <img [src]="song.imageUrl" alt="{{ song.name }}" *ngIf="song.imageUrl">
+        </ion-thumbnail>
+        <ion-label>
+          <h2>{{ song.name }}</h2>
+          <p>{{ song.artist }}</p>
+          <p>{{ song.releaseDate | date }}</p>
+          <div *ngIf="!song.comments || song.comments.length === 0">
+            <p>No hay comentarios.</p>
+          </div>
+          <div *ngIf="song.comments && song.comments.length > 0">
+            <p>Comentarios ({{ song.comments.length }}):</p>
+            <ion-list>
+              <ion-item *ngFor="let comment of song.comments">
+                <ion-label>
+                  <p>{{ comment.text }}</p>
+                  <p>Autor: {{ comment.author }}</p>
+                  <p>Estrellas: {{ comment.stars }}</p>
+                  <p>Fecha: {{ comment.createdAt | date }}</p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-label>
+        <!-- Botón "Ver Detalle" -->
+        <ion-button expand="block" (click)="viewSongDetails(song._id)" class="custom-button">Ver Detalle</ion-button>
+      </ion-item>
+    </ion-list>
+
+    <ion-footer>
+      <ion-toolbar>
+        <div class="button-container">
+          <ion-button expand="block" (click)="prevPage()" [disabled]="page === 1" class="custom-button">Anterior</ion-button>
+          <ion-button expand="block" (click)="nextPage()" [disabled]="(page * limit) >= filteredSongs.length" class="custom-button">Siguiente</ion-button>
+        </div>
+      </ion-toolbar>
+    </ion-footer>
+  </div>
+</ion-content>

@@ -50,7 +50,7 @@ exports.getTracks= async (req, res) => {
 exports.getTracksSpotify = async (req, res) => {
   try {
     const accessToken = await getSpotifyAccessToken();
-    const { query } = req.query; // Obtener el término de búsqueda de la query string
+    const { query } = req.query;
 
     if (!query) {
       return res.status(400).json({ error: "Query parameter is required" });
@@ -63,7 +63,7 @@ exports.getTracksSpotify = async (req, res) => {
       params: {
         q: query,
         type: "track",
-        limit: 50, // Puedes ajustar este límite según tus necesidades
+        limit: 50, 
       },
     });
 
@@ -112,13 +112,13 @@ exports.getSong = async (req, res) => {
 // Añadir comentario a una canción
 exports.addComment = async (req, res) => {
   try {
-    const { text, stars, userId, lat, lng } = req.body;
+    const { text, stars, author, lat, lng } = req.body;
     const song = await Song.findById(req.params.id);
     if (!song) {
       return res.status(404).send({ message: "Song not found" });
     }
     const comment = {
-      author: userId,
+      author,
       text,
       stars,
       createdAt: new Date(),
