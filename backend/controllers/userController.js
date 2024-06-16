@@ -6,7 +6,7 @@ exports.getUser = async (req, res) => {
     if (!user) {
       return res.status(404).send({ message: 'User not found' });
     }
-    res.send(user);
+    res.status(200).send(user);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -20,7 +20,7 @@ exports.addFavorite = async (req, res) => {
     }
     user.favorites.push(req.params.songId);
     await user.save();
-    res.send(user);
+    res.status(200).send(user);
   } catch (error) {
     res.status(500).send(error);
   }

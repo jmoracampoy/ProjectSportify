@@ -1,3 +1,22 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-header>
+    <ion-toolbar color="dark">
+      <ion-title>
+        <img src="assets/spotify-logo.png" alt="Spotify" style="height: 70px; padding: 10px;">
+      </ion-title>
+      <ion-buttons slot="end">
+        <ng-container *ngIf="!isLoggedIn()">
+          <ion-button (click)="navigateTo('register')">Registrarse</ion-button>
+          <ion-button (click)="navigateTo('login')">Iniciar sesión</ion-button>
+        </ng-container>
+        <ng-container *ngIf="isLoggedIn()">
+          <ion-button (click)="logout()">Cerrar sesión</ion-button>
+        </ng-container>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <router-outlet></router-outlet>
+  </ion-content>
 </ion-app>

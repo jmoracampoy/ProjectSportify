@@ -3,7 +3,7 @@ const axios = require("axios");
 const getSpotifyAccessToken = require("../middlewares/configSpotify");
 
 //Cargar de canciones Spotify
-exports.getTracksSpotify = async (req, res) => {
+exports.getTracks= async (req, res) => {
   try {
     const accessToken = await getSpotifyAccessToken();
     let tracks = [];
@@ -47,7 +47,7 @@ exports.getTracksSpotify = async (req, res) => {
 };
 
 // Buscar canciones en Spotify
-exports.getTracks = async (req, res) => {
+exports.getTracksSpotify = async (req, res) => {
   try {
     const accessToken = await getSpotifyAccessToken();
     const { query } = req.query; // Obtener el término de búsqueda de la query string
@@ -74,7 +74,7 @@ exports.getTracks = async (req, res) => {
       imageUrl: track.album.images[0]?.url,
     }));
 
-    res.json(tracks);
+    res.status(200).json(tracks);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error al obtener las pistas" });
@@ -90,7 +90,7 @@ exports.searchSongs = async (req, res) => {
     if (artist) query.artist = new RegExp(artist, "i");
     if (date) query.releaseDate = new Date(date);
     const songs = await Song.find(query);
-    res.send(songs);
+    res.status(200).send(songs);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -103,7 +103,7 @@ exports.getSong = async (req, res) => {
     if (!song) {
       return res.status(404).send({ message: "Song not found" });
     }
-    res.send(song);
+    res.status(200).send(song);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -126,7 +126,7 @@ exports.addComment = async (req, res) => {
     };
     song.comments.push(comment);
     await song.save();
-    res.send(song);
+    res.status(201).send(song);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -141,7 +141,7 @@ exports.addFavorite = async (req, res) => {
     }
     user.favorites.push(req.params.id);
     await user.save();
-    res.send(user);
+    res.status(200).send(user);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -174,7 +174,7 @@ exports.updateSong = async (req, res) => {
     if (!song) {
       return res.status(404).send({ message: "Song not found" });
     }
-    res.send(song);
+    res.status(200).send(song);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -187,7 +187,7 @@ exports.deleteSong = async (req, res) => {
     if (!song) {
       return res.status(404).send({ message: "Song not found" });
     }
-    res.send({ message: "Song deleted successfully" });
+    res.status(204).send({ message: "Song deleted successfully" });
   } catch (error) {
     res.status(500).send(error);
   }
@@ -202,7 +202,7 @@ exports.deleteComment = async (req, res) => {
     }
     song.comments.id(req.params.commentId).remove();
     await song.save();
-    res.send(song);
+    res.status(204).send(song);
   } catch (error) {
     res.status(500).send(error);
   }

@@ -1,0 +1,16 @@
+
+<ion-content class="ion-padding">
+  <ion-card class="ion-padding" style="max-width: 400px; margin: auto;">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <ion-item>
+        <ion-label position="floating">Correo electrónico</ion-label>
+        <ion-input type="email" formControlName="email"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Contraseña</ion-label>
+        <ion-input type="password" formControlName="password"></ion-input>
+      </ion-item>
+      <ion-button expand="full" type="submit" [disabled]="loginForm.invalid">Iniciar Sesión</ion-button>
+    </form>
+  </ion-card>
+</ion-content>
