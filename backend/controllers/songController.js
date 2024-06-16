@@ -131,7 +131,6 @@ exports.addComment = async (req, res) => {
     res.status(500).send(error);
   }
 };
-
 // Insertar canciones seleccionando como favoritos
 exports.addFavorite = async (req, res) => {
   try {

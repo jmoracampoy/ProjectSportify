@@ -1,14 +1,15 @@
-// src/app/models/song.model.ts
+export interface Geolocation {
+  type: string;
+  coordinates: number[];
+}
+
 export interface Comment {
-  _id?:string;
+  _id?: string;
   author: string;
   text: string;
   stars: number;
   createdAt: Date;
-  geolocation?: {
-    type: string;
-    coordinates: number[];
-  };
+  geolocation?: Geolocation;
 }
 
 export interface Song {
@@ -18,8 +19,5 @@ export interface Song {
   releaseDate?: Date;
   imageUrl?: string;
   comments: Comment[];
-  geolocation?: {
-    type: string;
-    coordinates: number[];
-  };
+  geolocation?: Geolocation;
 }

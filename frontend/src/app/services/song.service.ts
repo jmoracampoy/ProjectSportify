@@ -29,7 +29,7 @@ export class SongService {
     return this.http.get<Song>(`${this.apiUrl}/${songId}`);
   }
 
-  addCommentToSong(songId: string, comment: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/${songId}/comments`, comment);
+  addCommentToSong(songId: string, comment: any): Observable<Comment> {
+    return this.http.post<Comment>(`${this.apiUrl}/${songId}/comments`, comment);
   }
 }

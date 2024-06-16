@@ -1,3 +1,4 @@
+<!-- song-detail.page.html -->
 <ion-content class="ion-padding">
   <ion-button fill="clear" routerLink="/home" class="back-button">
     <ion-icon name="arrow-back"></ion-icon>
@@ -12,7 +13,11 @@
       </ion-card-header>
 
       <ion-card-content>
-        <p class="release-date">Fecha de lanzamiento: {{ song.releaseDate | date }}</p>
+        <div class="info-container">
+          <ion-text class="info-background">
+            <p class="release-date">Fecha de lanzamiento: {{ song.releaseDate | date }}</p>
+          </ion-text>
+        </div>
 
         <ion-list *ngIf="song.comments.length > 0">
           <ion-item *ngFor="let comment of song.comments" class="comment-item">
