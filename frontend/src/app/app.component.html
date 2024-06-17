@@ -2,7 +2,7 @@
   <ion-header>
     <ion-toolbar color="dark">
       <ion-title>
-        <img src="assets/spotify-logo.png" alt="Spotify" style="height: 70px; padding: 10px;">
+        <img src="assets/spotify-logo.png" alt="Spotify" style="height: 70px; padding: 10px; cursor: pointer;" (click)="navigateTo('home')">
       </ion-title>
       <ion-buttons slot="end">
         <ng-container *ngIf="!isLoggedIn()">

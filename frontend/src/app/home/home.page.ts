@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { SongService } from '../services/song.service';
 import { Song } from '../models/song.model';
 import { Router } from '@angular/router';
+import { UserService } from '../services/user.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'home-page',
@@ -12,15 +14,22 @@ export class HomePage implements OnInit {
   songs: Song[] = [];
   filteredSongs: Song[] = [];
   paginatedSongs: Song[] = [];
+  userFavorites: Song[] = [];
   searchTerm: string = '';
   loading: boolean = false;
   page: number = 1;
   limit: number = 20;
+  userId: string = '666f1da477ffb6c730f4dc60';
+  isLoggedIn: boolean = false;
 
-  constructor(private songService: SongService, private router: Router) {}
+  constructor(private songService: SongService, private router: Router, private userService: UserService,private authService: AuthService) {}
 
   ngOnInit() {
     this.getSongs();
+    this.isLoggedIn = this.authService.isLoggedIn();
+    if (this.authService.isLoggedIn()) {
+      this.loadUserFavorites();
+    }
   }
 
   viewSongDetails(songId: string) {
@@ -85,6 +94,30 @@ export class HomePage implements OnInit {
     if ((this.page * this.limit) < this.filteredSongs.length) {
       this.page++;
       this.updatePagination();
+    }
+  }
+
+  loadUserFavorites() {
+    this.userService.getUserFavorites(this.userId).subscribe(favorites => {
+      this.userFavorites = favorites;
+    });
+  }
+
+  isFavorite(songId: string): boolean {
+    return this.userFavorites.some(fav => fav._id === songId);
+  }
+
+  toggleFavorite(songId: string) {
+    if (this.isFavorite(songId)) {
+      this.userService.removeFavorite(this.userId, songId).subscribe(() => {
+        this.userFavorites = this.userFavorites.filter(fav => fav._id !== songId);
+        this.loadUserFavorites();
+      });
+    } else {
+      this.userService.addFavorite(this.userId, songId).subscribe(favorite => {
+        this.userFavorites.push(favorite);
+        this.loadUserFavorites();
+      });
     }
   }
 }

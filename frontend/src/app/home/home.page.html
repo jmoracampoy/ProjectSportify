@@ -1,4 +1,3 @@
-<!-- src/app/components/song-list/song-list.component.html -->
 <ion-content>
   <div class="container">
     <div class="search-bar">
@@ -39,8 +38,16 @@
             </ion-list>
           </div>
         </ion-label>
-        <!-- Botón "Ver Detalle" -->
         <ion-button expand="block" (click)="viewSongDetails(song._id)" class="custom-button">Ver Detalle</ion-button>
+        <!-- Contenedor de la estrella -->
+        <div class="favorite-container" *ngIf="isLoggedIn">
+          <ion-icon
+            name="star"
+            [ngClass]="{ 'favorite': isFavorite(song._id) }"
+            (click)="toggleFavorite(song._id)"
+            class="favorite-star"
+          ></ion-icon>
+        </div>
       </ion-item>
     </ion-list>
 

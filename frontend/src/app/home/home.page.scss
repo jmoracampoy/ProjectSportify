@@ -44,3 +44,21 @@ ion-searchbar {
   --placeholder-color: #b3b3b3;
   --color: black;
 }
+
+ion-item {
+  position: relative;
+
+  .favorite-star {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #b3b3b3;
+    transition: color 0.3s;
+
+    &.favorite {
+      color: #ffc107;
+    }
+  }
+}

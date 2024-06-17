@@ -98,5 +98,7 @@ const auth = require('../middlewares/auth');
 // Rutas de usuario
 router.get('/:id', auth, userController.getUser);
 router.post('/:id/favorites/:songId', auth, userController.addFavorite);
+router.delete('/:id/favorites/:songId', userController.removeFavorite);
+router.get('/:id/favorites', userController.getFavorites);
 
 module.exports = router;
