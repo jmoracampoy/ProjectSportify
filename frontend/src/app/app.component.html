@@ -10,6 +10,7 @@
           <ion-button (click)="navigateTo('login')">Iniciar sesión</ion-button>
         </ng-container>
         <ng-container *ngIf="isLoggedIn()">
+          <ion-button (click)="navigateTo('add-song')">Insertar Canción</ion-button>
           <ion-button (click)="logout()">Cerrar sesión</ion-button>
         </ng-container>
       </ion-buttons>

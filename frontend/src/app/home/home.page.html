@@ -1,15 +1,20 @@
 <ion-content>
   <div class="container">
     <div class="search-bar">
-      <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="onInput($event)" (ionClear)="clearSearch()" (ionEnter)="searchSongs()" placeholder="Buscar canciones o artistas"></ion-searchbar>
+      <ion-searchbar [(ngModel)]="searchTerm" (ionClear)="clearSearch()" (ionEnter)="searchSongs()" placeholder="Buscar canciones o artistas"></ion-searchbar>
+      <ion-button (click)="searchSongs()" class="search-button">
+        Buscar
+      </ion-button>
     </div>
 
-    <div *ngIf="loading" class="spinner-container">
-      <ion-spinner></ion-spinner>
+    <div *ngIf="loading">
+      <p style="text-align: center; color: #333; font-size: 18px; font-weight: bold;">Cargando...</p>
     </div>
 
     <div *ngIf="!loading && paginatedSongs.length === 0">
-      <p>No hay canciones disponibles.</p>
+      <p style="text-align: center; color: #333; font-size: 18px; font-weight: bold;">
+        No hay canciones disponibles.
+      </p>
     </div>
 
     <ion-list *ngIf="!loading && paginatedSongs.length > 0">
@@ -39,15 +44,13 @@
           </div>
         </ion-label>
         <ion-button expand="block" (click)="viewSongDetails(song._id)" class="custom-button">Ver Detalle</ion-button>
-        <!-- Contenedor de la estrella -->
-        <div class="favorite-container" *ngIf="isLoggedIn">
-          <ion-icon
-            name="star"
-            [ngClass]="{ 'favorite': isFavorite(song._id) }"
-            (click)="toggleFavorite(song._id)"
-            class="favorite-star"
-          ></ion-icon>
-        </div>
+        <ion-icon
+          *ngIf="isLoggedIn"
+          name="star"
+          [ngClass]="{ 'favorite': isFavorite(song._id) }"
+          (click)="toggleFavorite(song._id)"
+          class="favorite-star"
+        ></ion-icon>
       </ion-item>
     </ion-list>
 

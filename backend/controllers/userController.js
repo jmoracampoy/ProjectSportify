@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const Song = require('../models/song');
 
 exports.getUser = async (req, res) => {
   try {
@@ -14,17 +15,33 @@ exports.getUser = async (req, res) => {
 
 exports.addFavorite = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const userId = req.params.id;
+    const songId = req.params.songId;
+
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).send({ message: 'Usuario no encontrado' });
     }
-    user.favorites.push(req.params.songId);
+
+    const song = await Song.findById(songId);
+    if (!song) {
+      return res.status(404).send({ message: 'Canción no encontrada' });
+    }
+
+    const isFavorite = user.favorites.includes(songId);
+    if (isFavorite) {
+      return res.status(400).send({ message: 'La canción ya está en favoritos' });
+    }
+
+    user.favorites.push(songId);
     await user.save();
+    
     res.status(200).send(user);
   } catch (error) {
     res.status(500).send(error);
   }
 };
+
 
 // Método para eliminar una canción de los favoritos
 exports.removeFavorite = async (req, res) => {

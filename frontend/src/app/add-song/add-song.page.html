@@ -1,0 +1,44 @@
+<ion-button fill="clear" routerLink="/home" class="back-button" style="margin: 20px;">
+  <ion-icon name="arrow-back"></ion-icon>
+</ion-button>
+
+<ion-content class="ion-padding">
+  <div class="ion-text-center">
+    <ion-card class="spotify-form">
+      <ion-card-content>
+        <div *ngIf="songForm.value.imageUrl" class="image-preview centered-image">
+          <ion-img [src]="songForm.value.imageUrl" alt="Imagen seleccionada"></ion-img>
+        </div>
+
+        <div *ngIf="!songForm.value.imageUrl" class="image-preview centered-image">
+          <ion-img src='./assets/nota-musical.png' alt="Imagen por defecto"></ion-img>
+        </div>
+
+        <ion-button (click)="takePicture()" class="camera-button">
+          <ion-icon name="camera-outline"></ion-icon>
+        </ion-button>
+
+        <form [formGroup]="songForm" (ngSubmit)="onSubmit()" class="song-form">
+          <ion-list>
+            <ion-item class="form-item">
+              <ion-label position="stacked" class="label">Nombre</ion-label>
+              <ion-input formControlName="name" placeholder="Nombre de la canción" class="input" required></ion-input>
+            </ion-item>
+
+            <ion-item class="form-item">
+              <ion-label position="stacked" class="label">Artista</ion-label>
+              <ion-input formControlName="artist" placeholder="Nombre del artista" class="input" required></ion-input>
+            </ion-item>
+
+            <ion-item class="form-item">
+              <ion-label position="stacked" class="label">URL de Imagen</ion-label>
+              <ion-input formControlName="imageUrl" placeholder="URL de la imagen" class="input"></ion-input>
+            </ion-item>
+          </ion-list>
+
+          <ion-button expand="block" type="submit" [disabled]="songForm.invalid" class="submit-button">Insertar Canción</ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

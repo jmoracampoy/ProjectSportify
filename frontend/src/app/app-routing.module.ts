@@ -18,7 +18,11 @@ const routes: Routes = [
   {
     path: 'song-detail/:id',
     loadChildren: () => import('./song-detail/song-detail.module').then( m => m.SongDetailPageModule)
+  },  {
+    path: 'add-song',
+    loadChildren: () => import('./add-song/add-song.module').then( m => m.AddSongPageModule)
   },
+
 
 ];
 

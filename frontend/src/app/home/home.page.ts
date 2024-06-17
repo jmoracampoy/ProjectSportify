@@ -16,24 +16,29 @@ export class HomePage implements OnInit {
   paginatedSongs: Song[] = [];
   userFavorites: Song[] = [];
   searchTerm: string = '';
-  loading: boolean = false;
+  loading: boolean = true;
   page: number = 1;
   limit: number = 20;
-  userId: string = '666f1da477ffb6c730f4dc60';
+  userId: string = '66705a5f376332e570437d6b';
   isLoggedIn: boolean = false;
 
-  constructor(private songService: SongService, private router: Router, private userService: UserService,private authService: AuthService) {}
+  constructor(
+    private songService: SongService,
+    private router: Router,
+    private userService: UserService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
     this.getSongs();
     this.isLoggedIn = this.authService.isLoggedIn();
-    if (this.authService.isLoggedIn()) {
+    if (this.isLoggedIn) {
       this.loadUserFavorites();
     }
   }
 
   viewSongDetails(songId: string) {
-    this.router.navigate(['/song-detail', songId]); // Navega al detalle de la canción utilizando el router
+    this.router.navigate(['/song-detail', songId]);
   }
 
   getSongs() {
@@ -47,27 +52,26 @@ export class HomePage implements OnInit {
   }
 
   searchSongs() {
+    this.loading = true;
     if (this.searchTerm.trim() === '') {
       this.filteredSongs = this.songs;
     } else {
-      this.loading = true;
-      this.songService.searchSongs(this.searchTerm, this.searchTerm, this.searchTerm).subscribe((songs) => {
+      this.songService.searchSongs(this.searchTerm, this.searchTerm, '').subscribe((songs) => {
         this.filteredSongs = songs;
-        this.updatePagination();
-        this.loading = false;
+
+        if (this.isLoggedIn) {
+          this.songService.searchSpotify(this.searchTerm).subscribe((spotifySongs) => {
+            this.filteredSongs = [...this.filteredSongs, ...spotifySongs];
+            this.updatePagination();
+            this.loading = false;
+          });
+        } else {
+          this.updatePagination();
+          this.loading = false;
+        }
       });
     }
     this.page = 1;
-  }
-
-  onInput(event: any) {
-    const searchTerm = event.target.value.toLowerCase();
-    this.filteredSongs = this.songs.filter(song =>
-      song.name.toLowerCase().includes(searchTerm) ||
-      song.artist.toLowerCase().includes(searchTerm)
-    );
-    this.page = 1;
-    this.updatePagination();
   }
 
   clearSearch() {

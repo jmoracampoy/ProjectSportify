@@ -62,3 +62,15 @@ ion-item {
     }
   }
 }
+.search-bar {
+  display: flex;
+  align-items: center;
+}
+
+ion-searchbar {
+  flex: 1;
+}
+
+.search-button {
+  margin-left: 10px;
+}

@@ -46,7 +46,6 @@ exports.getTracks= async (req, res) => {
   }
 };
 
-// Buscar canciones en Spotify
 exports.getTracksSpotify = async (req, res) => {
   try {
     const accessToken = await getSpotifyAccessToken();
@@ -56,6 +55,7 @@ exports.getTracksSpotify = async (req, res) => {
       return res.status(400).json({ error: "Query parameter is required" });
     }
 
+    // Buscar pistas en Spotify
     const response = await axios.get(`https://api.spotify.com/v1/search`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -63,7 +63,7 @@ exports.getTracksSpotify = async (req, res) => {
       params: {
         q: query,
         type: "track",
-        limit: 50, 
+        limit: 50,
       },
     });
 
@@ -74,12 +74,32 @@ exports.getTracksSpotify = async (req, res) => {
       imageUrl: track.album.images[0]?.url,
     }));
 
-    res.status(200).json(tracks);
+    // Comprobar y guardar las canciones en la base de datos
+    const savedTracks = [];
+    for (const track of tracks) {
+      const existingTrack = await Song.findOne({ name: track.name, artist: track.artist });
+      if (!existingTrack) {
+        const newTrack = new Song(track);
+        await newTrack.save();
+        savedTracks.push(newTrack);
+      }
+    }
+
+    // Realizar la consulta para devolver todas las canciones que coincidan con el nombre o artista
+    const searchResults = await Song.find({
+      $or: [
+        { name: { $regex: query, $options: 'i' } },
+        { artist: { $regex: query, $options: 'i' } }
+      ]
+    });
+
+    res.status(200).json(searchResults);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Error al obtener las pistas" });
+    res.status(500).json({ error: "Error al obtener y guardar las pistas" });
   }
 };
+
 
 // Buscar canciones
 exports.searchSongs = async (req, res) => {
@@ -147,23 +167,29 @@ exports.addFavorite = async (req, res) => {
   }
 };
 
-// Insertar canciones mediante formulario
+
+
 exports.addSong = async (req, res) => {
   try {
-    const { name, artist, releaseDate, imageUrl, lat, lng } = req.body;
+    const { name, artist, imageUrl, lat, lng } = req.body;
+    const currentDate = new Date(); // Obtiene la fecha y hora actuales
+
     const song = new Song({
       name,
       artist,
-      releaseDate,
+      releaseDate: currentDate,
       imageUrl,
       geolocation: { type: "Point", coordinates: [lng, lat] },
     });
+
     await song.save();
     res.status(201).send(song);
   } catch (error) {
+    console.error(error);
     res.status(500).send(error);
   }
 };
+
 
 // Editar canción
 exports.updateSong = async (req, res) => {
