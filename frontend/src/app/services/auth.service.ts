@@ -10,7 +10,7 @@ import { catchError, tap } from 'rxjs/operators';
 export class AuthService {
   private tokenKey = 'token';
   private userKey = 'user';
-  private apiUrl = 'http://localhost:3000/api/auth';
+  private apiUrl = 'http://192.168.85.70:3000/api/auth';
 
   constructor(private http: HttpClient, private router: Router) {}
 

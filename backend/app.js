@@ -18,7 +18,11 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // Middleware
 app.use(bodyParser.json());
-app.use(cors()); // Aplica CORS para todas las rutas
+app.use(cors({
+  origin: '*', // Permite todas las solicitudes de origen
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
+  allowedHeaders: ['Content-Type', 'Authorization'] // Encabezados permitidos
+}));
 
 // Routes
 app.use('/api/auth', authRoutes);

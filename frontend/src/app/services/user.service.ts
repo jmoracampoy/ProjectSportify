@@ -7,7 +7,7 @@ import { AuthService } from './auth.service';
   providedIn: 'root',
 })
 export class UserService {
-  private apiUrl = 'http://localhost:3000/api/users';
+  private apiUrl = 'http://192.168.85.70:3000/api/users';
   constructor(private http: HttpClient, private authService: AuthService) {}
   private getHeaders(): HttpHeaders {
     const token = this.authService.getToken();
