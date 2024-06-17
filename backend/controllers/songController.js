@@ -112,7 +112,7 @@ exports.getSong = async (req, res) => {
 // Añadir comentario a una canción
 exports.addComment = async (req, res) => {
   try {
-    const { text, stars, author, lat, lng } = req.body;
+    const { text, stars, author } = req.body;
     const song = await Song.findById(req.params.id);
     if (!song) {
       return res.status(404).send({ message: "Song not found" });
@@ -122,7 +122,7 @@ exports.addComment = async (req, res) => {
       text,
       stars,
       createdAt: new Date(),
-      geolocation: { type: "Point", coordinates: [lng, lat] },
+      geolocation: { type: "Point", coordinates: [req.body.geolocation.coordinates[0], req.body.geolocation.coordinates[1]] },
     };
     song.comments.push(comment);
     await song.save();
@@ -131,6 +131,7 @@ exports.addComment = async (req, res) => {
     res.status(500).send(error);
   }
 };
+
 // Insertar canciones seleccionando como favoritos
 exports.addFavorite = async (req, res) => {
   try {

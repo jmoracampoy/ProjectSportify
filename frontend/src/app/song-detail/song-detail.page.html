@@ -19,34 +19,36 @@
           </ion-text>
         </div>
 
-        <ion-list *ngIf="song.comments.length > 0">
-          <ion-item *ngFor="let comment of song.comments" class="comment-item">
-            <ion-label class="comment-label">
-              <p class="comment-text">{{ comment.text }}</p>
-              <p class="comment-info">Autor: {{ comment.author }}</p>
-              <p class="comment-info">Estrellas: {{ comment.stars }}</p>
-              <p class="comment-info">Fecha: {{ comment.createdAt | date }}</p>
-            </ion-label>
-          </ion-item>
-        </ion-list>
+        <div class="comments-section">
+          <ion-list *ngIf="song.comments.length > 0">
+            <ion-item *ngFor="let comment of song.comments" class="comment-item">
+              <ion-label class="comment-label">
+                <p class="comment-text">{{ comment.text }}</p>
+                <p class="comment-info">Autor: {{ comment.author }}</p>
+                <p class="comment-info">Estrellas: {{ comment.stars }}</p>
+                <p class="comment-info">Fecha: {{ comment.createdAt | date }}</p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
 
-        <div *ngIf="song.comments.length === 0" class="no-comments">
-          <p>No hay comentarios.</p>
+          <div *ngIf="song.comments.length === 0" class="no-comments">
+            <p>No hay comentarios.</p>
+          </div>
+
+          <form [formGroup]="commentForm" (ngSubmit)="onSubmitComment()" class="comment-form">
+            <ion-item>
+              <ion-label position="stacked">Añadir Comentario</ion-label>
+              <ion-input formControlName="author" placeholder="Autor"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-textarea formControlName="text" placeholder="Comentario"></ion-textarea>
+            </ion-item>
+            <ion-item>
+              <ion-input formControlName="stars" type="number" min="0" max="5" placeholder="Estrellas"></ion-input>
+            </ion-item>
+            <ion-button expand="block" type="submit" [disabled]="commentForm.invalid">Enviar Comentario</ion-button>
+          </form>
         </div>
-
-        <form [formGroup]="commentForm" (ngSubmit)="onSubmitComment()" class="comment-form">
-          <ion-item>
-            <ion-label position="stacked">Añadir Comentario</ion-label>
-            <ion-input formControlName="author" placeholder="Autor"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-textarea formControlName="text" placeholder="Comentario"></ion-textarea>
-          </ion-item>
-          <ion-item>
-            <ion-input formControlName="stars" type="number" min="0" max="5" placeholder="Estrellas"></ion-input>
-          </ion-item>
-          <ion-button expand="block" type="submit" [disabled]="commentForm.invalid">Enviar Comentario</ion-button>
-        </form>
       </ion-card-content>
     </ion-card>
   </div>
