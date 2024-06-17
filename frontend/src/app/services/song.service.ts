@@ -53,4 +53,9 @@ export class SongService {
     const headers = this.getHeaders();
     return this.http.post<Song>(`${this.apiUrl}`, song, { headers });
   }
+
+  updateSong(id: string, songData: any): Observable<any> {
+    const headers = this.getHeaders();
+    return this.http.put<any>(`${this.apiUrl}/${id}`, songData, {headers});
+  }
 }

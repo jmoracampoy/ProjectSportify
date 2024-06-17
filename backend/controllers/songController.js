@@ -190,21 +190,36 @@ exports.addSong = async (req, res) => {
   }
 };
 
-
-// Editar canción
-exports.updateSong = async (req, res) => {
-  try {
-    const song = await Song.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-    if (!song) {
-      return res.status(404).send({ message: "Song not found" });
+  // Editar canción
+  exports.updateSong = async (req, res) => {
+    try {
+      const { name, artist, imageUrl, lat, lng } = req.body;
+      const updatedSong = await Song.findByIdAndUpdate(
+        req.params.id,
+        {
+          name,
+          artist,
+          releaseDate: new Date(),
+          imageUrl,
+          geolocation: {
+            type: "Point",
+            coordinates: [lng, lat],
+          },
+        },
+        { new: true }
+      );
+  
+      if (!updatedSong) {
+        return res.status(404).send({ message: 'Canción no encontrada' });
+      }
+  
+      res.status(200).send(updatedSong);
+    } catch (error) {
+      console.error('Error al actualizar la canción:', error);
+      res.status(500).send({ message: 'Error al actualizar la canción' });
     }
-    res.status(200).send(song);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-};
+  };
+
 
 // Eliminar canción
 exports.deleteSong = async (req, res) => {

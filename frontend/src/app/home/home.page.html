@@ -43,6 +43,7 @@
             </ion-list>
           </div>
         </ion-label>
+        <ion-button *ngIf="isLoggedIn" expand="block" (click)="editSong(song._id)" class="custom-button edit-button">Editar</ion-button>
         <ion-button expand="block" (click)="viewSongDetails(song._id)" class="custom-button">Ver Detalle</ion-button>
         <ion-icon
           *ngIf="isLoggedIn"

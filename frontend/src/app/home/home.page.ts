@@ -52,10 +52,10 @@ export class HomePage implements OnInit {
   }
 
   searchSongs() {
-    this.loading = true;
     if (this.searchTerm.trim() === '') {
       this.filteredSongs = this.songs;
     } else {
+      this.loading = true;
       this.songService.searchSongs(this.searchTerm, this.searchTerm, '').subscribe((songs) => {
         this.filteredSongs = songs;
 
@@ -123,5 +123,9 @@ export class HomePage implements OnInit {
         this.loadUserFavorites();
       });
     }
+  }
+
+  editSong(id_song:string){
+      this.router.navigate([`edit-song/${id_song}`]);
   }
 }
