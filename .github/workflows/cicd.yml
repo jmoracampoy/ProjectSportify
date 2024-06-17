@@ -73,7 +73,7 @@ jobs:
         with:
           start: npm start
           working-directory: frontend
-          wait-on: "npx wait-on --timeout 90000 http://localhost:4200"
+          wait-on: "npx wait-on --timeout 90000 http://localhost:8100"
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
