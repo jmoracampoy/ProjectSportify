@@ -58,4 +58,14 @@ export class SongService {
     const headers = this.getHeaders();
     return this.http.put<any>(`${this.apiUrl}/${id}`, songData, {headers});
   }
+
+  deleteSong(songId: string): Observable<any> {
+    const headers = this.getHeaders();
+    return this.http.delete(`${this.apiUrl}/${songId}`,{headers});
+  }
+
+  deleteCommentFromSong(songId: string, commentId: string): Observable<any> {
+    const headers = this.getHeaders();
+    return this.http.delete(`${this.apiUrl}/${songId}/comments/${commentId}`,{headers});
+  }
 }

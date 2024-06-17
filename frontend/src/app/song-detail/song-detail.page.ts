@@ -5,8 +5,9 @@ import { Song, Comment} from '../models/song.model'; // Importa las interfaces a
 import { GeolocationModel } from '../models/geolocation.model';
 import { GeolocationService } from '../services/geocalitation.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-song-detail',
@@ -17,13 +18,16 @@ export class SongDetailPage implements OnInit {
   geolocation?: GeolocationModel = undefined;
   song: Song | undefined;
   commentForm: FormGroup;
-
+  confirmationModalOpen: boolean = false;
+  isLoggedIn: boolean = false;
   constructor(
     private route: ActivatedRoute,
     private songService: SongService,
     private geolocationService: GeolocationService,
     private toastController: ToastController,
-    private fb: FormBuilder
+    private authService: AuthService,
+    private fb: FormBuilder,
+    private router: Router
   ) {
     this.commentForm = this.fb.group({
       author: ['', Validators.required],
@@ -36,6 +40,7 @@ export class SongDetailPage implements OnInit {
 
   ngOnInit(): void {
     const songId = this.route.snapshot.paramMap.get('id');
+    this.isLoggedIn = this.authService.isLoggedIn();
     if (songId) {
       this.songService.getSongById(songId).subscribe(
         (song: Song) => {
@@ -91,6 +96,64 @@ export class SongDetailPage implements OnInit {
   }
 
 
+  async deleteSongConfirmation(): Promise<void> {
+    this.confirmationModalOpen = true; // Open confirmation modal
+  }
+
+  async deleteSong(): Promise<void> {
+    if (this.song && this.song._id) {
+      this.confirmationModalOpen = false;
+
+      this.songService.deleteSong(this.song._id).subscribe(
+        async () => {
+          const toast = await this.toastController.create({
+            message: 'Canción eliminada correctamente',
+            duration: 3000,
+            position: 'bottom',
+            color: 'success',
+          });
+          toast.present();
+          this.router.navigate(['/home']);
+        },
+        async (error) => {
+          const toast = await this.toastController.create({
+            message: 'Error al eliminar la canción, intentalo más tarde',
+            duration: 3000,
+            position: 'bottom',
+            color: 'danger',
+          });
+          toast.present();
+        }
+      );
+    }
+  }
+
+  async deleteComment(commentId: string): Promise<void> {
+    if (this.song && this.song._id) {
+      this.songService.deleteCommentFromSong(this.song._id, commentId).subscribe(
+        async () => {
+          const toast = await this.toastController.create({
+            message: 'Comentario eliminado correctamente',
+            duration: 3000,
+            position: 'bottom',
+            color: 'success',
+          });
+          toast.present();
+          this.refreshSongDetails();
+        },
+        async (error) => {
+          const toast = await this.toastController.create({
+            message: 'Error al eliminar el comentario, intentalo más tarde',
+            duration: 3000,
+            position: 'bottom',
+            color: 'danger',
+          });
+          toast.present();
+        }
+      );
+    }
+  }
+
   private refreshSongDetails(): void {
     if (this.song && this.song._id) {
       this.songService.getSongById(this.song._id).subscribe(
@@ -98,9 +161,10 @@ export class SongDetailPage implements OnInit {
           this.song = song;
         },
         (error) => {
-          console.error('Error al actualizar detalles de la canción:', error);
+          console.error('Error al actualizar la canción:', error);
         }
       );
     }
   }
 }
+
