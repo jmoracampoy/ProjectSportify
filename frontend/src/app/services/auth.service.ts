@@ -26,6 +26,7 @@ export class AuthService {
       tap((response: any) => {
         if (response && response.token) {
           localStorage.setItem(this.tokenKey, response.token);
+          localStorage.setItem(this.userKey, response.userId);
         }
       }),
     );

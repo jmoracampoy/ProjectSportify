@@ -19,7 +19,7 @@ export class HomePage implements OnInit {
   loading: boolean = true;
   page: number = 1;
   limit: number = 20;
-  userId: string = '66705a5f376332e570437d6b';
+  userId: string = '';
   isLoggedIn: boolean = false;
 
   constructor(
@@ -31,6 +31,7 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
     this.getSongs();
+    this.userId = localStorage.getItem('user')!;
     this.isLoggedIn = this.authService.isLoggedIn();
     if (this.isLoggedIn) {
       this.loadUserFavorites();
