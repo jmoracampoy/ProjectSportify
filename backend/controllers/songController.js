@@ -30,13 +30,11 @@ exports.getTracks= async (req, res) => {
 
       tracks = tracks.concat(newTracks);
 
-      // Get the next URL to fetch more tracks
       nextUrl = response.data.tracks.next;
     }
 
     tracks = tracks.slice(0, 500);
 
-    // Guarda las canciones en la base de datos
     await Song.insertMany(tracks);
 
     res.json(tracks);
@@ -74,7 +72,6 @@ exports.getTracksSpotify = async (req, res) => {
       imageUrl: track.album.images[0]?.url,
     }));
 
-    // Comprobar y guardar las canciones en la base de datos
     const savedTracks = [];
     for (const track of tracks) {
       const existingTrack = await Song.findOne({ name: track.name, artist: track.artist });
@@ -84,8 +81,6 @@ exports.getTracksSpotify = async (req, res) => {
         savedTracks.push(newTrack);
       }
     }
-
-    // Realizar la consulta para devolver todas las canciones que coincidan con el nombre o artista
     const searchResults = await Song.find({
       $or: [
         { name: { $regex: query, $options: 'i' } },
@@ -121,7 +116,7 @@ exports.getSong = async (req, res) => {
   try {
     const song = await Song.findById(req.params.id).populate("comments.author");
     if (!song) {
-      return res.status(404).send({ message: "Song not found" });
+      return res.status(404).send({ message: "Canción no encontrada" });
     }
     res.status(200).send(song);
   } catch (error) {
@@ -135,7 +130,7 @@ exports.addComment = async (req, res) => {
     const { text, stars, author } = req.body;
     const song = await Song.findById(req.params.id);
     if (!song) {
-      return res.status(404).send({ message: "Song not found" });
+      return res.status(404).send({ message: "Canción no encontrada" });
     }
     const comment = {
       author,
@@ -157,7 +152,7 @@ exports.addFavorite = async (req, res) => {
   try {
     const user = await User.findById(req.user.userId);
     if (!user) {
-      return res.status(404).send({ message: "User not found" });
+      return res.status(404).send({ message: "Usuario no encontrado" });
     }
     user.favorites.push(req.params.id);
     await user.save();
@@ -226,25 +221,36 @@ exports.deleteSong = async (req, res) => {
   try {
     const song = await Song.findByIdAndDelete(req.params.id);
     if (!song) {
-      return res.status(404).send({ message: "Song not found" });
+      return res.status(404).send({ message: "Canción no encontrada" });
     }
-    res.status(204).send({ message: "Song deleted successfully" });
+    res.status(204).send({ message: "Canción eliminada correctamente" });
   } catch (error) {
     res.status(500).send(error);
   }
 };
 
-// Eliminar comentario
 exports.deleteComment = async (req, res) => {
   try {
     const song = await Song.findById(req.params.songId);
     if (!song) {
-      return res.status(404).send({ message: "Song not found" });
+      return res.status(404).send({ message: "Canción no encontrada" });
     }
-    song.comments.id(req.params.commentId).remove();
+    const comment = song.comments.id(req.params.commentId);
+    if (!comment) {
+      return res.status(404).send({ message: "Comentario no encontrado" });
+    }
+    comment.deleteOne();
     await song.save();
-    res.status(204).send(song);
+
+    const updatedSong = await Song.findById(req.params.songId); 
+    res.status(200).send({ message: "Comentario eliminado con éxito", song: updatedSong });
+
   } catch (error) {
-    res.status(500).send(error);
+    console.error("Error al eliminar comentario:", error);
+    if (error.name === 'CastError') {
+      res.status(400).send({ message: "ID de canción o comentario inválido" });
+    } else {
+      res.status(500).send({ message: "Error interno del servidor" });
+    }
   }
 };
