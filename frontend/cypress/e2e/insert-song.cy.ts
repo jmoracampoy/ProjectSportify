@@ -1,6 +1,6 @@
 describe('Formulario de Canción', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:8100/add-song');
+    cy.visit('http://localhost:4200/add-song');
 
   });
 

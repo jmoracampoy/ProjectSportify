@@ -1,6 +1,6 @@
 describe('Página de Inicio de Sesión', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:8100/login');
+    cy.visit('http://localhost:4200/login');
     cy.get('ion-content').should('be.visible');
     cy.get('ion-card').should('be.visible');
     cy.get('form').should('be.visible');

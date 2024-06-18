@@ -1,6 +1,6 @@
 describe('Página de Registro', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:8100/register');
+    cy.visit('http://localhost:4200/register');
     cy.get('ion-content').should('be.visible');
     cy.get('ion-card').should('be.visible');
     cy.get('form').should('be.visible');

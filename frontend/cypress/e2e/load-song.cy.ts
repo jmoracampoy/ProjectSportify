@@ -1,6 +1,6 @@
 describe('Lista de Canciones', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:8100/home');
+    cy.visit('http://localhost:4200/home');
   });
 
   it('debería mostrar la lista de canciones correctamente', () => {
