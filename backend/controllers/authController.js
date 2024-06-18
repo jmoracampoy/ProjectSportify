@@ -31,8 +31,9 @@ exports.login = async (req, res) => {
     res.status(200).send({ token, userId: user._id });
 
   } catch (error) {
-    console.error("Error during login:", error);
     res.status(500).send({ message: "Error interno del servidor" });
   }
 };
+
+
 
