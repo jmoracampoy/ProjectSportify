@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class SongService {
-  private apiUrl = 'http://192.168.85.70:3000/api/songs';
+  private apiUrl = 'http://localhost:3000/api/songs';
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 

@@ -1,8 +1,3 @@
-const express = require('express');
-const router = express.Router();
-const songController = require('../controllers/songController');
-const auth = require('../middlewares/auth');
-
 /**
  * @swagger
  * tags:
@@ -80,6 +75,77 @@ const auth = require('../middlewares/auth');
  *         releaseDate: "2023-01-01"
  *         imageUrl: "https://ejemplo.com/imagen.jpg"
  *         comments: []
+ * 
+ *     Comentario:
+ *       type: object
+ *       required:
+ *         - text
+ *         - stars
+ *         - userId
+ *       properties:
+ *         text:
+ *           type: string
+ *           description: Texto del comentario
+ *         stars:
+ *           type: number
+ *           description: Calificación del comentario (1-5)
+ *         userId:
+ *           type: string
+ *           description: ID del autor del comentario
+ *         lat:
+ *           type: number
+ *           description: Latitud para geolocalización del comentario
+ *         lng:
+ *           type: number
+ *           description: Longitud para geolocalización del comentario
+ *       example:
+ *         text: "Excelente canción!"
+ *         stars: 5
+ *         userId: "usuario123"
+ *         lat: 40.7128
+ *         lng: -74.006
+ */
+
+/**
+ * @swagger
+ * /songs/get-tracks:
+ *   get:
+ *     summary: Busca pistas de canciones en Spotify
+ *     tags: [Canciones]
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Consulta de búsqueda para encontrar pistas en Spotify
+ *     responses:
+ *       200:
+ *         description: Lista de pistas obtenidas de Spotify
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   name:
+ *                     type: string
+ *                     description: Nombre de la pista
+ *                   artist:
+ *                     type: string
+ *                     description: Artista de la pista
+ *                   releaseDate:
+ *                     type: string
+ *                     format: date
+ *                     description: Fecha de lanzamiento de la pista
+ *                   imageUrl:
+ *                     type: string
+ *                     description: URL de la imagen del álbum
+ *       400:
+ *         description: Parámetro de consulta requerido
+ *       500:
+ *         description: Error al obtener pistas de Spotify
  */
 
 /**
@@ -89,7 +155,7 @@ const auth = require('../middlewares/auth');
  *     summary: Obtiene y guarda pistas de canciones desde Spotify
  *     tags: [Canciones]
  *     responses:
- *       '200':
+ *       200:
  *         description: Lista de canciones obtenidas y guardadas exitosamente
  *         content:
  *           application/json:
@@ -123,7 +189,7 @@ const auth = require('../middlewares/auth');
  *           format: date
  *         description: Fecha de lanzamiento de la canción (YYYY-MM-DD)
  *     responses:
- *       '200':
+ *       200:
  *         description: Lista de canciones que coinciden con los criterios de búsqueda
  *         content:
  *           application/json:
@@ -147,13 +213,13 @@ const auth = require('../middlewares/auth');
  *           type: string
  *         description: ID de la canción a obtener
  *     responses:
- *       '200':
+ *       200:
  *         description: Información detallada de la canción solicitada
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Cancion'
- *       '404':
+ *       404:
  *         description: La canción no fue encontrada
  */
 
@@ -170,13 +236,13 @@ const auth = require('../middlewares/auth');
  *           schema:
  *             $ref: '#/components/schemas/Cancion'
  *     responses:
- *       '201':
+ *       201:
  *         description: Canción añadida exitosamente
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Cancion'
- *       '400':
+ *       400:
  *         description: Error en la solicitud
  */
 
@@ -200,15 +266,15 @@ const auth = require('../middlewares/auth');
  *           schema:
  *             $ref: '#/components/schemas/Cancion'
  *     responses:
- *       '200':
+ *       200:
  *         description: Canción actualizada exitosamente
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Cancion'
- *       '404':
+ *       404:
  *         description: La canción no fue encontrada
- *       '400':
+ *       400:
  *         description: Error en la solicitud
  */
 
@@ -226,9 +292,9 @@ const auth = require('../middlewares/auth');
  *           type: string
  *         description: ID de la canción a eliminar
  *     responses:
- *       '204':
+ *       204:
  *         description: Canción eliminada exitosamente
- *       '404':
+ *       404:
  *         description: La canción no fue encontrada
  */
 
@@ -250,40 +316,18 @@ const auth = require('../middlewares/auth');
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               text:
- *                 type: string
- *                 description: Texto del comentario
- *               stars:
- *                 type: number
- *                 description: Calificación del comentario (1-5)
- *               userId:
- *                 type: string
- *                 description: ID del autor del comentario
- *               lat:
- *                 type: number
- *                 description: Latitud para geolocalización del comentario
- *               lng:
- *                 type: number
- *                 description: Longitud para geolocalización del comentario
- *             example:
- *               text: "Excelente canción!"
- *               stars: 5
- *               userId: "usuario123"
- *               lat: 40.7128
- *               lng: -74.006
+ *             $ref: '#/components/schemas/Comentario'
  *     responses:
- *       '200':
+ *       200:
  *         description: Comentario agregado exitosamente
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Cancion'
- *       '404':
- *         description: La canción no fue encontrada
- *       '400':
+ *       400:
  *         description: Error en la solicitud
+ *       404:
+ *         description: La canción no fue encontrada
  */
 
 /**
@@ -298,7 +342,7 @@ const auth = require('../middlewares/auth');
  *         required: true
  *         schema:
  *           type: string
- *         description: ID de la canción a la que pertenece el comentario
+ *         description: ID de la canción
  *       - in: path
  *         name: commentId
  *         required: true
@@ -306,100 +350,17 @@ const auth = require('../middlewares/auth');
  *           type: string
  *         description: ID del comentario a eliminar
  *     responses:
- *       '200':
+ *       204:
  *         description: Comentario eliminado exitosamente
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Cancion'
- *       '404':
- *         description: La canción o
- *         el comentario no fueron encontrados
- *       '400':
- *         description: Error en la solicitud
+ *       404:
+ *         description: Comentario o canción no encontrados
  */
 
-/**
- * @swagger
- * /api/favorites/{id}:
- *   post:
- *     summary: Agrega una canción a favoritos para el usuario autenticado
- *     tags: [Canciones]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: ID de la canción a agregar a favoritos
- *     responses:
- *       '200':
- *         description: Canción agregada a favoritos exitosamente
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 _id:
- *                   type: string
- *                   description: ID único del usuario
- *                 favorites:
- *                   type: array
- *                   description: Lista de IDs de canciones favoritas del usuario
- *                   items:
- *                     type: string
- *       '404':
- *         description: Usuario no encontrado
- *       '500':
- *         description: Error interno del servidor
- */
-/**
- * @swagger
- * /songs/get-tracks:
- *   get:
- *     summary: Search for tracks on Spotify
- *     description: Search for tracks on Spotify using a query parameter.
- *     parameters:
- *       - in: query
- *         name: query
- *         schema:
- *           type: string
- *         required: true
- *         description: The search query to find tracks on Spotify.
- *     responses:
- *       200:
- *         description: A list of tracks from Spotify
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   name:
- *                     type: string
- *                     description: The name of the track.
- *                     example: Let It Be
- *                   artist:
- *                     type: string
- *                     description: The name of the artist.
- *                     example: The Beatles
- *                   releaseDate:
- *                     type: string
- *                     format: date
- *                     description: The release date of the track.
- *                     example: 1970-05-08
- *                   imageUrl:
- *                     type: string
- *                     description: The URL of the track's album cover image.
- *                     example: https://i.scdn.co/image/abc123
- *       400:
- *         description: Query parameter is required
- *       500:
- *         description: Error while fetching tracks from Spotify
- */
+const express = require('express');
+const router = express.Router();
+const songController = require('../controllers/songController');
+const auth = require('../middlewares/auth');
+
 router.get('/get-tracks', songController.getTracksSpotify);
 router.get('/tracks', songController.getTracks);
 router.get('/', songController.searchSongs);
